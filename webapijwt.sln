@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33927.289
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapijwt", "webapijwt\webapijwt.csproj", "{B61D5E2C-1CF7-4856-8B17-A58F7C43B286}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B61D5E2C-1CF7-4856-8B17-A58F7C43B286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B61D5E2C-1CF7-4856-8B17-A58F7C43B286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B61D5E2C-1CF7-4856-8B17-A58F7C43B286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B61D5E2C-1CF7-4856-8B17-A58F7C43B286}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3458EEC0-EF43-42B2-A87A-6AF094844E46}
+	EndGlobalSection
+EndGlobal
