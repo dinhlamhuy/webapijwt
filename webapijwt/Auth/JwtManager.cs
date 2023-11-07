@@ -2,56 +2,73 @@
 using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+
 using Microsoft.IdentityModel.Tokens;
 
 namespace webapijwt.Auth
 {
-    public class JwtManager
+    public static class JwtManager
     {
-        private static readonly string secretKey = ConfigurationManager.AppSettings["JwtSecretKey"];
-        private static readonly string issuer = ConfigurationManager.AppSettings["JwtIssuer"];
-        private static readonly string audience = ConfigurationManager.AppSettings["JwtAudience"];
+        private static string Secret = ConfigurationManager.AppSettings["JwtSecretKey"];
+        private static string issuer = ConfigurationManager.AppSettings["JwtIssuer"];
+        private static string audience = ConfigurationManager.AppSettings["JwtAudience"];
 
-        public static string GenerateToken(string userId)
+        private static JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
+        public static string GenerateToken(string username, string role)
         {
-            var key = Encoding.ASCII.GetBytes(secretKey);
-            var claims = new[]
-            {
-            new Claim(ClaimTypes.Name, userId),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
-        };
+            byte[] key = Convert.FromBase64String(Secret);
+            var descriptor = GenerateTokenDescriptor(username, key, role);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+
+            JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
+            return handler.WriteToken(token);
+        }
+
+
+
+        private static SecurityTokenDescriptor GenerateTokenDescriptor(string username, byte[] key, string role)
+        {
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(2), // Thời gian sống của token
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Subject = new ClaimsIdentity(new[] {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role),//<-- User role!
+                //new Claim(ClaimTypes.Role, "Role2")
+                }),//<-- User role!
+                Expires = DateTime.UtcNow.AddMinutes(30),//Token takes only UTC time
+                SigningCredentials = new SigningCredentials(securityKey,
+                SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return descriptor;
         }
+
 
         public static ClaimsPrincipal GetPrincipal(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
+                if (jwtToken == null)
+                    return null;
+                byte[] key = Convert.FromBase64String(Secret);
+                TokenValidationParameters parameters = new TokenValidationParameters()
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidIssuer = issuer,
-                    ValidAudience = audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
-                }, out _);
-
+                    RequireExpirationTime = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+                SecurityToken securityToken;
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(token,
+                      parameters, out securityToken);
                 return principal;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }

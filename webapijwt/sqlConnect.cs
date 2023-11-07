@@ -7,7 +7,7 @@ namespace webapijwt
     public class sqlConnect
     {
         static readonly string svrdatabase = "PET_STORE_MANAGEMENT";
-        static readonly string sname = "192.168.32.82";
+        static readonly string sname = "192.168.32.196";
         static readonly string svvrruser = "sa";
         static readonly string svrpass = "123";
         public static string Connect_String = $"Provider = SQLOLEDB;Data Source={sname};Initial Catalog={svrdatabase};User Id={svvrruser};Password={svrpass}";

@@ -17,6 +17,8 @@ namespace webapijwt.Models
     {
         public string User_ID { get; set; }
         public string Password { get; set; }
+        public string header { get; set; }
+
     }
     public class RegisterRequestModel
     {
