@@ -1,13 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Web;
+﻿using System.Data.OleDb;
 using System.Web.Http;
 using webapijwt.Auth;
 using webapijwt.Models;
@@ -16,13 +7,7 @@ namespace webapijwt.Controllers
 {
     public class ValuesController : ApiController
     {
-        //[Route("api/value")]
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    string token = JwtManager.GenerateToken("54314");
-        //    return new string[] { "value1", "value2", token };
-        //}
+        
 
         [Route("api/login")]
         [HttpPost]
@@ -64,7 +49,7 @@ namespace webapijwt.Controllers
 
         }
 
-        [CustomAttribute("Role1,Role3")]
+        [CustomAttribute("Role1","Role3")]
         [Route("api/GetBy")]
         [HttpPost]
         public IHttpActionResult GetBy()
@@ -72,22 +57,9 @@ namespace webapijwt.Controllers
             string authorizationHeader = Request.Headers.Authorization.ToString();
             var authorizationBody = Request.Content;
             string requestBody = authorizationBody.ReadAsStringAsync().Result;
-            return Ok("Welcome, " + requestBody);
+            return Ok("Vô được nghen, " + requestBody);
         }
 
-        //// POST api/values
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/values/5
-        //public void Delete(int id)
-        //{
-        //}
+      
     }
 }
